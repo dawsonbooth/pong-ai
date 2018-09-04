@@ -3,23 +3,8 @@ import argparse
 from agents import AI, Player
 from game import Game
 
-# Dictionary to associate argument with agent
-agents_dict = {
-    "player": Player,
-    "basic": AI.Basic,
-    "q-learning": AI.QLearning,
-}
-
-# Parse arguments
-parser = argparse.ArgumentParser()
-parser.add_argument("-a1", "--agent1", type=str, choices=[
-                    "player", "basic", "q-learning", ], help="Type of player for the left paddle")
-parser.add_argument("-a2", "--agent2", type=str, choices=[
-                    "player", "basic", "q-learning", ], help="Type of player for the right paddle")
-args = parser.parse_args()
-
 # Main function
-def main():
+def main(args):
     # Set up game
     pong = Game()
     pong.setup()
@@ -44,4 +29,20 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # Dictionary to associate argument with agent
+    agents_dict = {
+        "player": Player,
+        "basic": AI.Basic,
+        "q-learning": AI.QLearning,
+    }
+
+    # Parse arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-a1", "--agent1", type=str, choices=[
+                        "player", "basic", "q-learning", ], help="Type of player for the left paddle")
+    parser.add_argument("-a2", "--agent2", type=str, choices=[
+                        "player", "basic", "q-learning", ], help="Type of player for the right paddle")
+    args = parser.parse_args()
+
+    # Run program
+    main(args)
