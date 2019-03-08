@@ -3,6 +3,7 @@ import argparse
 from agents import AI, Player
 from game import Game
 
+
 # Main function
 def main(args):
     # Set up game
@@ -33,10 +34,14 @@ if __name__ == '__main__':
     # Parse arguments
     parser = argparse.ArgumentParser(
         description='Play pong vs your favorite form of AI')
-    parser.add_argument('-a1', '--agent1', nargs='?', type=str, choices=[
-                        'player', 'basic', 'q-learning', ], default='basic', help='Type of player for the left paddle')
-    parser.add_argument('-a2', '--agent2', nargs='?', type=str, choices=[
-                        'player', 'basic', 'q-learning', ], default='q-learning', help='Type of player for the right paddle')
+    parser.add_argument('-a1', '--agent1', nargs='?', type=str,
+                        choices=['player', 'basic', 'q-learning', ],
+                        default='basic',
+                        help='Type of player for the left paddle')
+    parser.add_argument('-a2', '--agent2', nargs='?', type=str,
+                        choices=['player', 'basic', 'q-learning', ],
+                        default='q-learning',
+                        help='Type of player for the right paddle')
     args = parser.parse_args()
 
     # Run program
