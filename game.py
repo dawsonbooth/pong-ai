@@ -8,24 +8,21 @@ from pygame.math import Vector2
 from constants import *
 
 
-# Game Objects
 class Paddle(pygame.Rect):
-    score = 0
-
-    def __init__(self, left, top, **kwargs):
+    def __init__(self, left, top, color=WHITE):
         super().__init__(left, top, LINETHICKNESS, PADDLEHEIGHT)
-        self.color = kwargs.get("color") if kwargs.get("color") else WHITE
+        self.score = 0
+        self.color = color
 
 
 class Ball(pygame.Rect):
 
-    def __init__(self, left, top, **kwargs):
+    def __init__(self, left, top, color=WHITE):
         super().__init__(left, top, LINETHICKNESS, LINETHICKNESS)
-        self.color = kwargs.get("color") if kwargs.get("color") else WHITE
+        self.color = color
         self.velocity = Vector2(1, 1)
 
 
-# Game
 class Game():
 
     def setup(self):
@@ -55,7 +52,7 @@ class Game():
     def advance(self):
         self.events = pygame.event.get()
         for event in self.events:
-            if event.type == QUIT:
+            if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
@@ -106,7 +103,7 @@ class Game():
     def move_ball(self):
         self.ball.x += self.ball.velocity.x
         self.ball.y += self.ball.velocity.y
-        print(self.ball.velocity)
+        # print(self.ball.velocity)
 
     # Checks for a collision with a wall, and 'bounces' ball off it.
     # Returns new direction

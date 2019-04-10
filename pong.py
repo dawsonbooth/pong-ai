@@ -12,7 +12,7 @@ def main(args):
 
     # Dictionary to associate argument with agent
     agents_dict = {
-        'player': Player,
+        'player': Player.Player,
         'basic': AI.Basic,
         'q-learning': AI.QLearning,
     }
@@ -36,12 +36,12 @@ if __name__ == '__main__':
         description='Play pong vs your favorite form of AI')
     parser.add_argument('-a1', '--agent1', nargs='?', type=str,
                         choices=['player', 'basic', 'q-learning', ],
-                        default='basic',
-                        help='Type of player for the left paddle')
+                        default='player',
+                        help='Type of agent for the left paddle')
     parser.add_argument('-a2', '--agent2', nargs='?', type=str,
                         choices=['player', 'basic', 'q-learning', ],
                         default='q-learning',
-                        help='Type of player for the right paddle')
+                        help='Type of agent for the right paddle')
     args = parser.parse_args()
 
     # Run program
