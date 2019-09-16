@@ -3,7 +3,7 @@ from random import shuffle
 
 import pygame
 
-from constants import PADDLEHEIGHT, WINDOWHEIGHT, WINDOWWIDTH
+from settings import PADDLEHEIGHT, WINDOWHEIGHT, WINDOWWIDTH
 
 
 class Basic():
@@ -28,8 +28,10 @@ class Basic():
         elif self.paddle.centery > target:
             self.paddle.y -= 1
 
+
 class ANN():
     pass
+
 
 class QLearning():
     Q = defaultdict(lambda: defaultdict(int))

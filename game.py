@@ -5,7 +5,7 @@ from random import choice, random
 import pygame
 from pygame.math import Vector2
 
-from constants import *
+from settings import *
 
 
 class Paddle(pygame.Rect):
