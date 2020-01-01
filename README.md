@@ -24,6 +24,8 @@ pip3 install pygame==2.0.0.dev4
 
 This issue is discussed further <a href="https://github.com/pygame/pygame/issues/555#issuecomment-541237897">here</a>.
 
+The game may additionally run slowly on macOS as opposed to a Windows PC. Solutions to this are not well documented, and given the scope of the project a PC may be better suited for the program anyway.
+
 # Usage
 
 This is a command-line program. The main file, `pong.py` can be executed as follows:
