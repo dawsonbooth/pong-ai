@@ -6,21 +6,29 @@ This program is a clone for the classic Pong game. With a CLI activation, the us
 
 With Git installed, simply clone the repository using the command:
 
-```
+```bash
 git clone https://github.com/dawsonbooth/pong-ai.git
 ```
 
 Next, make sure PyGame is installed.
 
-```
+```bash
 pip install pygame
 ```
+
+_Currently, PyGame/Python has issues with recent versions of macOS. If you experience a dark screen when running PyGame, try using the following command to install a working version:_
+
+```bash
+pip3 install pygame==2.0.0.dev4
+```
+
+This issue is discussed further <a href="https://github.com/pygame/pygame/issues/555#issuecomment-541237897">here</a>.
 
 # Usage
 
 This is a command-line program. The main file, `pong.py` can be executed as follows:
 
-```
+```bash
 python pong.py [-h] [-a1 [{player,basic,q-learning}]] [-a2 [{player,basic,q-learning}]]
 ```
 
