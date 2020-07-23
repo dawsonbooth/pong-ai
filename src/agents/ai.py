@@ -1,8 +1,6 @@
 from collections import defaultdict
 from random import shuffle
 
-import pygame
-
 from settings import PADDLEHEIGHT, WINDOWHEIGHT, WINDOWWIDTH
 
 
@@ -18,15 +16,15 @@ class Basic():
 
         if self.game.ball.velocity.x < 0:
             if self.paddle.x < (WINDOWWIDTH / 2):
-                target = self.game.ball.centery
+                target = self.game.ball.y
         else:
             if self.paddle.x > (WINDOWWIDTH / 2):
-                target = self.game.ball.centery
+                target = self.game.ball.y
 
-        if self.paddle.centery < target:
-            self.paddle.y += 1
-        elif self.paddle.centery > target:
-            self.paddle.y -= 1
+        if self.paddle.y < target:
+            self.paddle.move(0, 1)
+        elif self.paddle.y > target:
+            self.paddle.move(0, -1)
 
 
 class ANN():
@@ -67,10 +65,11 @@ class QLearning():
 
     def load_state(self):
         self.state = self.discretize([
-            self.paddle.centery,
-            self.game.ball.centery,
-            self.game.ball.velocity.x,
-            self.game.ball.velocity.y])
+            self.paddle.y,
+            self.game.ball.y,
+            # self.game.ball.velocity.x,
+            # self.game.ball.velocity.y
+        ])
 
     def make_key(self, arr):
         arr2 = []
@@ -111,7 +110,7 @@ class QLearning():
         return best_action
 
     def perform_action(self, action):
-        self.paddle.y += action
+        self.paddle.move(0, action)
 
     def learn_from_action(self, s, a, r, s_prime):
         cur_q_value = self.get_q_value(s, a)
@@ -130,7 +129,7 @@ class QLearning():
         reward = 0
         if (self.last_state and self.last_action):
 
-            y_distance = abs(self.paddle.centery - self.game.ball.centery)
+            y_distance = abs(self.paddle.y - self.game.ball.y)
             reward -= y_distance
 
             reward -= self.living_cost

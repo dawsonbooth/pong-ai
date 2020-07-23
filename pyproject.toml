@@ -19,8 +19,8 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.5"
-pygame = "2.0.0.dev4"
+python = "^3.7"
+arcade = "^2.4.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.3.2"

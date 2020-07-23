@@ -1,3 +1,5 @@
+import arcade
+
 from agents import AI, Player
 from cli import parser
 from game import Game
@@ -5,10 +7,6 @@ from game import Game
 
 # Main function
 def main(args):
-    # Set up game
-    game = Game()
-    game.setup()
-
     # Dictionary to associate argument with agent
     agents_dict = {
         'player': Player.Player,
@@ -17,16 +15,17 @@ def main(args):
     }
 
     # Agent 1 - left paddle
-    a1 = agents_dict[args.agent1](game, game.paddle1)
+    a1 = agents_dict[args.agent1]
 
     # Agent 2 - right paddle
-    a2 = agents_dict[args.agent2](game, game.paddle2)
+    a2 = agents_dict[args.agent2]
 
-    # Game loop
-    while True:
-        game.advance()
-        a1.act()
-        a2.act()
+    # Set up game
+    game = Game(a1, a2)
+    game.setup()
+
+    # Run game
+    arcade.run()
 
 
 if __name__ == '__main__':
