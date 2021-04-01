@@ -1,18 +1,18 @@
 from collections import defaultdict
 from random import shuffle
+from typing import DefaultDict
 
 from settings import PADDLEHEIGHT, WINDOWHEIGHT, WINDOWWIDTH
 
 
-class Basic():
-
+class Basic:
     def __init__(self, game, paddle):
         self.game = game
         self.paddle = paddle
 
     def act(self):
 
-        target = WINDOWHEIGHT/2
+        target = WINDOWHEIGHT / 2
 
         if self.game.ball.velocity.x < 0:
             if self.paddle.x < (WINDOWWIDTH / 2):
@@ -27,19 +27,19 @@ class Basic():
             self.paddle.move(0, -1)
 
 
-class ANN():
+class ANN:
     pass
 
 
-class QLearning():
-    Q = defaultdict(lambda: defaultdict(int))
-    alpha = .1
-    gamma = .9
+class QLearning:
+    Q: DefaultDict[str, DefaultDict[str, int]] = defaultdict(lambda: defaultdict(int))
+    alpha = 0.1
+    gamma = 0.9
     epsilon = 0.1
 
-    precision = PADDLEHEIGHT / 20
+    precision = PADDLEHEIGHT / 10
 
-    actions = [-precision, 0, precision]
+    actions = [-precision, precision]
     living_cost = 1
     movement_cost = 5
     optimism = 0
@@ -64,18 +64,12 @@ class QLearning():
         return out
 
     def load_state(self):
-        self.state = self.discretize([
-            self.paddle.y,
-            self.game.ball.y,
-            # self.game.ball.velocity.x,
-            # self.game.ball.velocity.y
-        ])
+        self.state = self.discretize([self.paddle.y, self.game.ball.y])
 
     def make_key(self, arr):
         arr2 = []
         for i in range(0, len(arr)):
-            v = round((int(arr[i]) + 100) / self.precision) * \
-                self.precision if type(arr[i]) == "string" else arr[i]
+            v = round((int(arr[i]) + 100) / self.precision) * self.precision if type(arr[i]) == "string" else arr[i]
             arr2.append(v)
         return str(arr2)
 
@@ -127,7 +121,7 @@ class QLearning():
 
         # Learn
         reward = 0
-        if (self.last_state and self.last_action):
+        if self.last_state and self.last_action:
 
             y_distance = abs(self.paddle.y - self.game.ball.y)
             reward -= y_distance
@@ -136,8 +130,7 @@ class QLearning():
             if self.last_action != 0:
                 reward -= self.movement_cost
 
-            self.learn_from_action(
-                self.last_state, self.last_action, reward, self.state)
+            self.learn_from_action(self.last_state, self.last_action, reward, self.state)
 
         action = self.select_action()
 

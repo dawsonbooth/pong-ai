@@ -9,9 +9,9 @@ from game import Game
 def main(args):
     # Dictionary to associate argument with agent
     agents_dict = {
-        'player': Player.Player,
-        'basic': AI.Basic,
-        'q-learning': AI.QLearning,
+        "player": Player.Player,
+        "basic": AI.Basic,
+        "q-learning": AI.QLearning,
     }
 
     # Agent 1 - left paddle
@@ -28,7 +28,7 @@ def main(args):
     arcade.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Parse arguments
     args = parser.parse_args()
 

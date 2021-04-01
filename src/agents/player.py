@@ -1,8 +1,8 @@
 from game import Game, Paddle
 
 
-class Player():
-    __slots__ = 'game', 'paddle', 'keypress'
+class Player:
+    __slots__ = "game", "paddle", "keypress"
 
     game: Game
     paddle: Paddle
