@@ -1,161 +1,60 @@
-name: Release
+name: release
 
 on:
   push:
-    # Sequence of patterns matched against refs/tags
     tags:
-      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+      - "v*"
 
 jobs:
-  Linux:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.7
-      - name: Set up Poetry
-        run: |
-          python -m pip install --upgrade pip
-          pip install poetry
-          poetry install
-      - name: Build project
-        id: build
-        run: |
-          make build
-          echo "::set-output name=filename::$(ls dist)"
-        shell: bash
-      - name: Upload release file
-        uses: actions/upload-artifact@v1
-        with:
-          name: ${{ steps.build.outputs.filename }}
-          path: ./dist/${{ steps.build.outputs.filename }}
-
-  MacOS:
-    runs-on: macos-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.7
-      - name: Set up Poetry
-        run: |
-          python -m pip install --upgrade pip
-          pip install poetry
-          poetry install
-      - name: Build project
-        id: build
-        run: |
-          make build
-          echo "::set-output name=filename::$(ls dist)"
-        shell: bash
-      - name: Upload release file
-        uses: actions/upload-artifact@v1
-        with:
-          name: ${{ steps.build.outputs.filename }}
-          path: ./dist/${{ steps.build.outputs.filename }}
-
-  Windows:
+  create:
     runs-on: windows-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Set up Python 3.7
+      - name: Set up Python
         uses: actions/setup-python@v1
         with:
-          python-version: 3.7
-      - name: Set up Poetry
+          python-version: 3.8
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: 1.1.4
+      - name: Configure poetry
+        run: poetry config virtualenvs.in-project true
+      - name: Install Dependencies
+        run: poetry install
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python -m pip install --upgrade pip
-          pip install poetry
-          poetry install
+          poetry run inv release
+
+  upload:
+    name: Build and upload ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    needs: [create]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: 1.1.4
+      - name: Configure poetry
+        run: poetry config virtualenvs.in-project true
+      - name: Install Dependencies
+        run: poetry install
       - name: Build project
-        id: build
-        run: |
-          make build
-          echo "::set-output name=filename::$((Get-ChildItem -Path "./dist" | Select-Object -First 1).Name)"
-        shell: pwsh
-      - name: Upload release file
-        uses: actions/upload-artifact@v1
-        with:
-          name: ${{ steps.build.outputs.filename }}
-          path: ./dist/${{ steps.build.outputs.filename }}
-
-  Release:
-    needs: [Linux, MacOS, Windows]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.7
-      - name: Set up Poetry
-        run: |
-          python -m pip install --upgrade pip
-          pip install poetry
-      - name: Get version
-        id: version
-        run: |
-          echo "::set-output name=version::$(make version)"
-      - name: Download Linux release file
-        uses: actions/download-artifact@master
-        with:
-          name: pong-ai-${{ steps.version.outputs.version }}-linux
-          path: ./dist/pong-ai-${{ steps.version.outputs.version }}-linux
-      - name: Download MacOS release file
-        uses: actions/download-artifact@master
-        with:
-          name: pong-ai-${{ steps.version.outputs.version }}-darwin
-          path: ./dist/pong-ai-${{ steps.version.outputs.version }}-darwin
-      - name: Download Windows release file
-        uses: actions/download-artifact@master
-        with:
-          name: pong-ai-${{ steps.version.outputs.version }}-win32.exe
-          path: ./dist/pong-ai-${{ steps.version.outputs.version }}-win32.exe
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+        run: poetry run inv build
+      - name: Upload release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          draft: false
-          prerelease: false
-      - name: Upload Linux release file asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/pong-ai-${{ steps.version.outputs.version }}-linux/pong-ai-${{ steps.version.outputs.version }}-linux
-          asset_name: pong-ai-${{ steps.version.outputs.version }}-linux
-          asset_content_type: application/octet-stream
-      - name: Upload MacOS release file asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/pong-ai-${{ steps.version.outputs.version }}-darwin/pong-ai-${{ steps.version.outputs.version }}-darwin
-          asset_name: pong-ai-${{ steps.version.outputs.version }}-darwin
-          asset_content_type: application/octet-stream
-      - name: Upload Windows release file asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/pong-ai-${{ steps.version.outputs.version }}-win32.exe/pong-ai-${{ steps.version.outputs.version }}-win32.exe
-          asset_name: pong-ai-${{ steps.version.outputs.version }}-win32.exe
-          asset_content_type: application/octet-stream
+        run: poetry run inv upload
