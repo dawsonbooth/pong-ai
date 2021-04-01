@@ -1,9 +1,8 @@
 # `pong-ai`
 
-
 ## Description
 
-This program is a clone for the classic Pong game. With a CLI activation, the user has the option of playing against another user, a specialized "AI agent," or a basic computer player that follows the ball. Currently, the only agent is a Q-learning AI. Further plans include additional agents that use other various decision-making structures, such as a neural network or a Markov decision process.
+This program is a clone for the classic Pong game. With a CLI activation, the user has the option of playing against another user, a specialized AI agent or a basic computer player that follows the ball. Currently, the only agent is a Q-learning AI. Further plans include additional agents that use other various decision-making structures, such as a neural network or a Markov decision process.
 
 ## Installation
 
